@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li>
+        <a class='navbar-links' href='#home'><span>home</span></a>
+      </li>
+      <li>
+        <a class='navbar-links' href='#aboutme'><span>about me</span></a>
+      </li>
+      <li>
+        <a class='navbar-links' href='#projects'><span>projects</span></a>
+      </li>
+      <li>
+        <a class='navbar-links' href='#skills'><span>skills</span></a>
+      </li>
+      <li>
+        <a class='navbar-links' href='#contact'><span>contact</span></a>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li>
+        <a class='navbar-links globe' href='#geo'>
+          <span type="button" data-toggle="collapse" data-target="#globe" aria-expanded="false" aria-controls="globe">
+            <i class="fa fa-globe fa-3x"></i></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+{% block content %} put your content here {% endblock %}
+
+{% endblock %}
