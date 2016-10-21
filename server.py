@@ -2,8 +2,8 @@
 
 import os
 
-from flask import (Flask, render_template, request, flash)
-from flask import redirect, session as flask_session
+from flask import (Flask, render_template, redirect, request, flash)
+from flask import session as flask_session
 # from flask_debugtoolbar import DebugToolbarExtension
 
 from model import db, connect_to_db
