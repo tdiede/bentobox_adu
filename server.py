@@ -14,7 +14,7 @@ import os
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-# app.secret_key = "ABC"
+app.secret_key = "ABC"
 SECRET_KEY = "ABCDEFG"
 SECRET_KEY = os.environ.get("FLASK_SECRET_KEY", "ABCDEF")
 
