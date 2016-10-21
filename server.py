@@ -28,8 +28,14 @@ def error():
 def index():
     """Homepage."""
 
-    num = flask_session["visits"] = flask_session.get("visits", 0) + 1
-    return render_template("homepage.html", num=num)
+    user_id = flask_session.get('user_id')
+
+    if not user_id:
+        return redirect("/login")
+    else:
+
+        num = flask_session["visits"] = flask_session.get("visits", 0) + 1
+        return render_template("homepage.html", num=num)
 
 
 @app.route('/register', methods=['GET'])
