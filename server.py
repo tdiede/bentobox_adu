@@ -1,26 +1,22 @@
 """ADU bento box."""
 
-from jinja2 import StrictUndefined
+import os
 
-from flask import (Flask, render_template, request, flash, redirect, session)
+from flask import (Flask, render_template, request, flash)
+from flask import redirect, session as flask_session
 # from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db
+from model import db, connect_to_db
 from model import (User, Flashcard, Content)
-
-import os
 
 
 app = Flask(__name__)
-
-# Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
-SECRET_KEY = "ABCDEFG"
-SECRET_KEY = os.environ.get("FLASK_SECRET_KEY", "ABCDEF")
+app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY", "abcdef")
 
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
-app.jinja_env.undefined = StrictUndefined
+# from jinja2 import StrictUndefined
+# app.jinja_env.undefined = StrictUndefined
 
 
 @app.route("/error")
@@ -32,7 +28,8 @@ def error():
 def index():
     """Homepage."""
 
-    return render_template("homepage.html")
+    num = flask_session["visits"] = flask_session.get("visits", 0) + 1
+    return render_template("homepage.html", num=num)
 
 
 @app.route('/register', methods=['GET'])
@@ -160,17 +157,17 @@ def make_flashcard(flashcard_id):
 ################################################################################
 
 if __name__ == "__main__":
-    # We have to set debug=True here, since it has to be True at the
-    # point that we invoke the DebugToolbarExtension
+    # We have to set debug=True here, at the point we invoke the DebugToolbarExtension.
     # app.debug = True
     # app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-
-    # connect_to_db(app, os.environ.get("DATABASE_URL"))
-
-    # Use the DebugToolbar
     # DebugToolbarExtension(app)
 
-    PORT = int(os.environ.get("PORT", 5000))
+    connect_to_db(app, os.environ.get("DATABASE_URL"))
+
+    # Create the tables we need from our models (if they don't already exist).
+    db.create_all(app=app)
+
     DEBUG = "NO_DEBUG" not in os.environ
+    PORT = int(os.environ.get("PORT", 5000))
 
     app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
