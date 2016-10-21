@@ -1,36 +1,42 @@
 <!doctype html>
 <html>
 <head>
-  <title>Ratings</title>
+
+    <title>ADU</title>
+
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
+
+    <link rel="stylesheet" href="../static/css/site.css" />
+
 </head>
 
 <body>
 
-Ratings
-
 {% if "user_id" in session %}
-    <a href="/logout">Logout</a>
+    <form action="/logout" method="POST">
+        <input type="submit" value="LOGOUT">
+    </form>
 {% else %}
-    <a href="/login">Login</a>
+    <form action="/register" method="GET">
+        <input type="submit" value="REGISTER">
+    </form>
+    <form action="/login" method="GET">
+        <input type="submit" value="LOGIN">
+    </form>
 {% endif %}
-
-<form action="/register" method="GET">
-    <input type="submit" value="REGISTER">
-</form>
-<form action="/login" method="GET">
-    <input type="submit" value="LOGIN">
-</form>
-<form action="/logout" method="POST">
-    <input type="submit" value="LOGOUT">
-</form>
-
-<hr>
 
 {% for flash in get_flashed_messages() %}
   {{ flash }}
 {% endfor %}
 
-{% block content %} put your content here {% endblock %}
+{% block nav %} put your nav here {% endblock %}
+
+<script src='http://code.jquery.com/jquery.js'></script>
 
 </body>
 </html>
