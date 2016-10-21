@@ -3,20 +3,29 @@
 from jinja2 import StrictUndefined
 
 from flask import (Flask, render_template, request, flash, redirect, session)
-from flask_debugtoolbar import DebugToolbarExtension
+# from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db
 from model import (User, Flashcard, Content)
+
+import os
 
 
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+# app.secret_key = "ABC"
+SECRET_KEY = "ABCDEFG"
+SECRET_KEY = os.environ.get("FLASK_SECRET_KEY", "ABCDEF")
 
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
+
+
+@app.route("/error")
+def error():
+    raise Exception("Error!")
 
 
 @app.route('/')
@@ -153,13 +162,15 @@ def make_flashcard(flashcard_id):
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
+    # app.debug = True
+    # app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
-    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-
-    connect_to_db(app)
+    # connect_to_db(app, os.environ.get("DATABASE_URL"))
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
-    app.run(host='0.0.0.0')
+    PORT = int(os.environ.get("PORT", 5000))
+    DEBUG = "NO_DEBUG" not in os.environ
+
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
