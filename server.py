@@ -33,9 +33,7 @@ def index():
     if not user_id:
         return redirect("/login")
     else:
-
-        num = flask_session["visits"] = flask_session.get("visits", 0) + 1
-        return render_template("homepage.html", num=num)
+        return render_template("homepage.html")
 
 
 @app.route('/register', methods=['GET'])
@@ -89,17 +87,17 @@ def login_process():
         flash("Incorrect password. Please try again.")
         return redirect("/login")
 
-    session['user_id'] = user.user_id
+    flask_session['user_id'] = user.user_id
 
-    flash("Logged in.")
-    return redirect("/users/%s" % user.user_id)
+    flash("Logged in as %s." % (email))
+    return render_template("homepage.html")
 
 
 @app.route('/logout', methods=['POST'])
 def logout_process():
     """Process user logout."""
 
-    del session['user_login']
+    del flask_session['user_login']
     flash('You are now logged out.')
     return redirect("/")
 
@@ -147,7 +145,7 @@ def make_flashcard(flashcard_id):
     content_id = int(request.form['content_id'])
     knowledge_score = int(request.form['knowledge_score'])
 
-    user_id = session.get('user_id')
+    user_id = flask_session.get('user_id')
     if not user_id:
         raise Exception("No user logged in.")
 
@@ -171,7 +169,7 @@ if __name__ == "__main__":
     connect_to_db(app, os.environ.get("DATABASE_URL"))
 
     # Create the tables we need from our models (if they don't already exist).
-    db.create_all(app=app)
+    db.create_all()
 
     DEBUG = "NO_DEBUG" not in os.environ
     PORT = int(os.environ.get("PORT", 5000))

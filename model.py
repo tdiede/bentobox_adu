@@ -24,6 +24,7 @@ class User(db.Model):
     email = db.Column(db.String(64), nullable=True, unique=True)
     password = db.Column(db.String(64), nullable=True)
     age = db.Column(db.Integer, nullable=True)
+    zipcode = db.Column(db.String(10), nullable=True)
     architecture_degree = db.Column(db.Boolean, nullable=True)
 
     def __repr__(self):
