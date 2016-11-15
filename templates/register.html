@@ -1,0 +1,50 @@
+{% extends 'navbar.html' %}
+
+{% block content %}
+
+<div class='container'>
+
+    <h2>Registration</h2>
+    <form action="/register" method="POST">
+      <div>
+            <label>Email:
+                <input type="email" name="email" required>
+            </label>
+        </div>
+
+        <div>
+            <label>Password:
+                <input type="password" name="password" required>
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Age:
+                <input type="number" name="age">
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Zipcode:
+                <input type="text" name="zipcode">
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Architecture Degree:
+                <input type="text" name="architecture_degree" value="True or False">
+            </label>
+        </div>
+
+        <div>
+            <input type="submit" value="Register">
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

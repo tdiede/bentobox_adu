@@ -1,0 +1,23 @@
+{% extends 'navbar.html' %}
+
+{% block content %}
+
+
+<!-- <img id='color-wheel' src='../static/img/color_wheel.png' /> -->
+<canvas id="canvas-picker"></canvas>
+
+<div id="rgb">RGB: <input type="text"></input></div>
+<div id="hex">HEX: <input type="text"></input></div>
+
+
+<div id='sample-box'></div>
+
+<input id="opacity-range" type="range" max='100' min='0' value='10' />
+
+<div>
+    <h1>opacity slider</h1>
+</div>
+
+
+
+{% endblock %}
