@@ -2,12 +2,13 @@
 
 import os
 
-from flask import (Flask, render_template, redirect, request, flash)
-from flask import session as flask_session
+from flask import (Flask, render_template, redirect, request, session, flash)
 # from flask_debugtoolbar import DebugToolbarExtension
 
 from model import db, connect_to_db
 from model import (User, Flashcard, Content)
+
+import bcrypt
 
 
 app = Flask(__name__)
@@ -28,7 +29,7 @@ def error():
 def index():
     """Homepage."""
 
-    user_id = flask_session.get('user_id')
+    user_id = session.get('current_user')
 
     if not user_id:
         return redirect("/login")
@@ -37,71 +38,97 @@ def index():
 
 
 @app.route('/register', methods=['GET'])
-def register_form():
-    """New users can create an account through this form."""
+def user_register():
+    """User register form."""
+    return render_template("register.html")
 
-    return render_template("register_form.html")
+
+@app.route('/login', methods=['GET'])
+def user_login():
+    """User login form."""
+    return render_template("login.html")
 
 
 @app.route('/register', methods=['POST'])
 def register_process():
-    """Process new user account registration."""
+    """Process new user account registration; user entered into database."""
+
+    # In case form not fully filled out.
+    email, password, age, zipcode, architecture_degree = '', '', 0, '00000', False
 
     # Get form variables.
     email = request.form['email']
     password = request.form['password']
-    age = int(request.form['age'])
+    age = request.form['age']
     zipcode = request.form['zipcode']
+    architecture_degree = request.form['architecture_degree']
 
-    new_user = User(email=email, password=password, age=age, zipcode=zipcode)
+    if User.query.filter_by(email=email).first():  # Checks to see if user is already registered.
+        flash("You're already registered. Please log in.")
+        return redirect('/')
+    else:
+        # Hash a password for the first time, with a randomly-generated salt.
+        p = password.encode()
+        hashed = bcrypt.hashpw(p, bcrypt.gensalt())
+        new_user = User(email=email, password=hashed, age=age, zipcode=zipcode, architecture_degree=architecture_degree)
 
-    db.session.add(new_user)
-    db.session.commit()
+        db.session.add(new_user)
+        db.session.commit()
 
-    flash("User %s added." % email)
-    return redirect("/")
-
-
-@app.route('/login', methods=['GET'])
-def login_form():
-    """Registered users can log in through this form."""
-
-    return render_template("login_form.html")
+        session['current_user'] = email
+        flash("Welcome, %s! You are now registered." % (email))
+        return render_template("homepage.html")
 
 
 @app.route('/login', methods=['POST'])
 def login_process():
-    """Process user login."""
+    """Process user login; user login to be completed."""
 
     # Get form variables.
     email = request.form['email']
     password = request.form['password']
 
     user = User.query.filter_by(email=email).first()
+    hashed = user.password
 
-    if not user:
-        flash("You are not a registered user, %s. Please register." % email)
-        return redirect("/register")
+    if user:  # Checks to see if user is registered.
+        # # Checks to see if user password is correct (not using bcrypt hashing).
+        # if current_password == user.password:
 
-    if user.password != password:
-        flash("Incorrect password. Please try again.")
-        return redirect("/login")
-
-    flask_session['user_id'] = user.user_id
-
-    flash("Logged in as %s." % (email))
-    return render_template("homepage.html")
+        # Check that an unhashed password matches one that has previously been hashed.
+        if bcrypt.checkpw(password, hashed):
+            session['current_user'] = email
+            flash("Logged in as %s" % (email))
+            return render_template("homepage.html")
+        else:
+            flash("Wrong password. Try again!")
+            return redirect('/login')
+    else:
+        flash("Please register.")
+        return redirect('/register')
 
 
 @app.route('/logout', methods=['POST'])
-def logout_process():
-    """Process user logout."""
+def process_logout():
+    """Identifies user session to be deleted. Deletes user session. Redirects."""
 
-    del flask_session['user_login']
-    flash('You are now logged out.')
-    return redirect("/")
+    current_user = session['current_user']
+    del session['current_user']
+    flash("You have logged out, %s." % current_user)
+    return redirect('/')
 
 
+@app.route('/color')
+def pick_color():
+    return render_template("colorpicker.html")
+
+
+@app.route('/slider')
+def pick_opacity():
+    return render_template("slider.html")
+
+
+#################################
 @app.route('/users')
 def user_list():
     """Show list of users."""
@@ -145,7 +172,7 @@ def make_flashcard(flashcard_id):
     content_id = int(request.form['content_id'])
     knowledge_score = int(request.form['knowledge_score'])
 
-    user_id = flask_session.get('user_id')
+    user_id = session.get('user_id')
     if not user_id:
         raise Exception("No user logged in.")
 
