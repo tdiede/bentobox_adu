@@ -54,8 +54,29 @@ def index():
             prev_cat = next_cat
             permutations.append(permutation)
 
-        print permutations
         return render_template("homepage.html", permutations=permutations)
+
+
+@app.route('/display')
+def display():
+    """Homepage."""
+
+    components = db.session.query(Component.component, label('', Component.category)).order_by(Component.category).all()
+    cats = db.session.query(Component.category, label('label-to-replace', func.count(Component.component_id))).group_by(Component.category).order_by(Component.category).all()
+
+    options = []
+    for component in components:
+        options.append(component[0])
+
+    prev_cat = 0
+    permutations = []
+    for cat in cats:
+        next_cat = cat[1] + prev_cat
+        permutation = (cat[0], cat[1], options[prev_cat:next_cat])
+        prev_cat = next_cat
+        permutations.append(permutation)
+
+    return render_template("homepage.html", permutations=permutations)
 
 
 @app.route('/register', methods=['GET'])

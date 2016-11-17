@@ -10,6 +10,8 @@
 
 $(document).ready( function() {
 
+$("div.cat").hide();
+
 $('.btn').on('click', function(e) {
     var identity = $(this).attr('id');
     $("div.cat[data-cat='"+identity+"']").toggle();
@@ -40,14 +42,15 @@ $('.btn').on('click', function(e) {
 <label><input type="button" class='category btn btn-info' id='{{ permutation[0] }}'
     value="{{ permutation[0] }} ({{ permutation[1] }})"><span class="badge"></span></label>
 
-{% for each in permutation[2] %}
+<br>
 <div class='cat' data-cat='{{ permutation[0] }}'>
+{% for each in permutation[2] %}
 <label class='component component-label'>
     <input type="radio" name="optradio"
            class='component component-radio'
-           value="{{ each[0] }}">{{ each }}</label>
-</div>
+           value="{{ each[0] }}"> {{ each }}</label><br>
 {% endfor %}
+</div>
 
 {% endfor %}
 </form>
