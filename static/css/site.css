@@ -1,32 +1,18 @@
 /* Style */
 
-/*body {
-    margin-top: 50px;
-    margin-bottom: 30px;
-    background-image: url('../img/bentotest_2048x.png');
-    background-size: 100% auto;
-    background-attachment: local;
-}
-*/
-
 body {
   /* Location of the image */
-  background-image: url('../img/testing.png');
-  
+  background-image: url('../img/testing.png');  
   /* Background image is centered vertically and horizontally at all times */
-  background-position: center center;
-  
+  background-position: center center;  
   /* Background image doesn't tile */
   background-repeat: no-repeat;
-  
-  /* Background image is fixed in the viewport so that it doesn't move when 
+    /* Background image is fixed in the viewport so that it doesn't move when 
      the content's height is greater than the image's height */
-  background-attachment: fixed;
-  
+  background-attachment: fixed;  
   /* This is what makes the background image rescale based
      on the container's size */
-  background-size: cover;
-  
+  background-size: cover;  
   /* Set a background color that will be displayed
      while the background image is loading */
   background-color: #eeeeee;
@@ -45,33 +31,39 @@ body {
 
 /* Style our navbar. */
 .navbar {
-    background-color: #333333;
-    margin-bottom: 0;
-}
-
-/* The footer always appears at the bottom of the browser window. */
-footer {
-    height: 30px;
-    background-color: #333333;
-    position: fixed;
-    bottom: 0;
-    width: 100%;  /* required because fixed position */
+    background-color: transparent;
+    border-bottom: none;
 }
 
 
-/*#canvas-picker {
-  width: 800px;
-  height: auto;
-  position: relative;
-  margin: 0 auto;
-  z-index: 100;
-}*/
+.fa, .glyphicon {
+    font-size: 50px;
+    color: #333333;
+}
+
+
+
+
+#canvas-picker {
+    background-color: black;
+    position: relative;
+    margin: 0 auto;
+    z-index: 100;
+    cursor: url('../img/eyedropper_flip.png') 25 25, auto;
+}
 
 #sample-box {
-  position: relative;
-  margin: 0 auto;
-  height: 400px;
-  width: 400px;
-  background-color: red;
-  opacity: 0.5;
+    position: relative;
+    margin: 0 auto;
+    height: 50px;
+    width: 100px;
+    background-color: orange;
+    opacity: 0.5;
+    border: white 3px solid;
+}
+
+#opacity-range {
+    width: 200px;
+    margin: 0 auto;
+    cursor: pointer;
 }

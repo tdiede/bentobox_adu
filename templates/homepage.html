@@ -2,6 +2,26 @@
 
 {% block content %}
 
+
+
+
+
+<script>
+
+$(document).ready( function() {
+
+$('.btn').on('click', function(e) {
+    var identity = $(this).attr('id');
+    $("div.cat[data-cat='"+identity+"']").toggle();
+
+});
+
+});
+
+</script>
+
+
+
     <!-- <img src='../static/img/gradient.png'></img> -->
     <img class='img-adu' src='../static/img/bentotest_2048x.png'></img>
 
@@ -12,47 +32,30 @@
 
 <hr>
 
-<p><a href="/components">View all the components you may select.</a></p>
+<p><a href="/components">View all the categories of components you may select.</a></p>
 
-<ul>
-    <li>Roofing</li>
-    <ul>
-        <li>Shingle</li>
-        <li>Standing Seam Metal</li>
-        <li>Spanish Tile</li>
-    </ul>
-    <li>Flooring</li>
-    <ul>
-        <li>Wood</li>
-        <li>Concrete</li>
-        <li>Tile</li>
-    </ul>
-    <li>Exterior Wall Finishes</li>
-    <ul>
-        <li>Cement Plaster</li>
-        <li>Wood Siding</li>
-        <li>Board + Batten</li>
-        <li>Aluminum Panels</li>
-        <li>Brick Veneer</li>
-    </ul>
-    <li>Door + Window Styles</li>
-    <ul>
-        <li>Contemporary Metal Storefront</li>
-        <li>Classic Wood Trim + Molds</li>
-    </ul>
-    <li>Appliances</li>
-    <ul>
-        <li>Washer</li>
-        <li>Dryer</li>
-    </ul>
-    <li>Built-In Furniture</li>
-    <ul>
-        <li>Closet</li>
-        <li>Shelves</li>
-        <li>Drawers</li>
-        <li>Desk</li>
-    </ul>
-</ul>
+<form action='' method='POST'>
+{% for permutation in permutations %}
+
+<label><input type="button" class='category btn btn-info' id='{{ permutation[0] }}'
+    value="{{ permutation[0] }} ({{ permutation[1] }})"><span class="badge"></span></label>
+
+{% for each in permutation[2] %}
+<div class='cat' data-cat='{{ permutation[0] }}'>
+<label class='component component-label'>
+    <input type="radio" name="optradio"
+           class='component component-radio'
+           value="{{ each[0] }}">{{ each }}</label>
+</div>
+{% endfor %}
+
+{% endfor %}
+</form>
+
+
+
+
+
 
 
 <p><a href="/permutations">View your saved permutations.</a></p>

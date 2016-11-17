@@ -6,7 +6,12 @@ from flask import (Flask, render_template, redirect, request, session, flash)
 # from flask_debugtoolbar import DebugToolbarExtension
 
 from model import db, connect_to_db
-from model import (User, Flashcard, Content)
+from model import (User, Component)
+# (Flashcard, Content)
+
+from sqlalchemy import func
+from sqlalchemy import asc
+from sqlalchemy.sql import label
 
 import bcrypt
 
@@ -34,7 +39,23 @@ def index():
     if not user_id:
         return redirect("/login")
     else:
-        return render_template("homepage.html")
+        components = db.session.query(Component.component, label('', Component.category)).order_by(Component.category).all()
+        cats = db.session.query(Component.category, label('label-to-replace', func.count(Component.component_id))).group_by(Component.category).order_by(Component.category).all()
+
+        options = []
+        for component in components:
+            options.append(component[0])
+
+        prev_cat = 0
+        permutations = []
+        for cat in cats:
+            next_cat = cat[1] + prev_cat
+            permutation = (cat[0], cat[1], options[prev_cat:next_cat])
+            prev_cat = next_cat
+            permutations.append(permutation)
+
+        print permutations
+        return render_template("homepage.html", permutations=permutations)
 
 
 @app.route('/register', methods=['GET'])
@@ -76,8 +97,9 @@ def register_process():
         db.session.commit()
 
         session['current_user'] = email
+        components = Component.query.all()
         flash("Welcome, %s! You are now registered." % (email))
-        return render_template("homepage.html")
+        return render_template("homepage.html", components=components)
 
 
 @app.route('/login', methods=['POST'])
@@ -98,8 +120,9 @@ def login_process():
         # Check that an unhashed password matches one that has previously been hashed.
         if bcrypt.checkpw(password, hashed):
             session['current_user'] = email
+            components = Component.query.all()
             flash("Logged in as %s" % (email))
-            return render_template("homepage.html")
+            return render_template("homepage.html", components=components)
         else:
             flash("Wrong password. Try again!")
             return redirect('/login')
@@ -123,19 +146,16 @@ def pick_color():
     return render_template("colorpicker.html")
 
 
-@app.route('/slider')
-def pick_opacity():
-    return render_template("slider.html")
-
-
 #################################
-@app.route('/users')
+@app.route('/users_db')
 def user_list():
     """Show list of users."""
 
-    users = User.query.all()
+    if session['current_user'] == 'admin@admin.com':
+        users = User.query.all()
+        return render_template("users_db.html", users=users)
 
-    return render_template("user_list.html", users=users)
+    return redirect('/')
 
 
 @app.route('/users/<int:user_id>')

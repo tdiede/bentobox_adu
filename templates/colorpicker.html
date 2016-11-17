@@ -3,21 +3,23 @@
 {% block content %}
 
 
-<!-- <img id='color-wheel' src='../static/img/color_wheel.png' /> -->
 <canvas id="canvas-picker"></canvas>
 
-<div id="rgb">RGB: <input type="text"></input></div>
-<div id="hex">HEX: <input type="text"></input></div>
+<div>
 
-
-<div id='sample-box'></div>
-
-<input id="opacity-range" type="range" max='100' min='0' value='10' />
+<form action='/color_input' method='GET'>
+    RGB: <input id="rgb" type="text" placeholder='0-255, 0-255, 0-255' value='' data-rgb=''></input>
+    HEX: <input id="hex" type="text" placeholder='RRGGBB' value='' data-hex=''></input>
+</form>
 
 <div>
-    <h1>opacity slider</h1>
+    <h3>opacity slider</h3>
+    <label id="opacity-range-label" for="opacity-range"></label>
+    <input id="opacity-range" type="range" max='100' min='0' value='100' />
+    <div id='sample-box'></div>
 </div>
 
+</div>
 
 
 {% endblock %}
